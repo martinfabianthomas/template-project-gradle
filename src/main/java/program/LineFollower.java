@@ -1,4 +1,4 @@
-package programms;
+package program;
 
 import ev3dev.sensors.ev3.EV3TouchSensor;
 import lejos.utility.Delay;

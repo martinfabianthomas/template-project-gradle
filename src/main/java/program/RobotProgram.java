@@ -1,6 +1,4 @@
-package programms;
-
-import wrapper.perception.exception.UncalibratedSensorException;
+package program;
 
 public interface RobotProgram {
     /**

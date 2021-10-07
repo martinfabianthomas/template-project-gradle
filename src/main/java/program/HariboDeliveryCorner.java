@@ -1,4 +1,4 @@
-package programms;
+package program;
 
 import ev3dev.sensors.ev3.EV3TouchSensor;
 import lejos.utility.Delay;
@@ -43,12 +43,14 @@ public class HariboDeliveryCorner implements RobotProgram, LineDetectionListener
             Delay.msDelay(100);
         }
 
+        // Avoid stopping immediately in any of the whiles.
+        Delay.msDelay(1000);
+
         log.info("Start");
         running = true;
 
         movement.forward();
         systemMillisStart = System.currentTimeMillis();
-        Delay.msDelay(1000);
 
         while (!reachedCornerOnce) {
             if (userInput.isPressed()) {

@@ -1,4 +1,4 @@
-package programms;
+package program;
 
 import ev3dev.sensors.ev3.EV3TouchSensor;
 import lejos.utility.Delay;
@@ -46,8 +46,10 @@ public class MapSurrounding implements RobotProgram {
             Delay.msDelay(100);
         }
 
-        log.info("Start");
+        // Avoid stopping immediately in while.
         Delay.msDelay(1000);
+
+        log.info("Start");
 
         BufferedImage image = new BufferedImage(pictureWidth, pictureHeight, BufferedImage.TYPE_INT_RGB);
 
@@ -61,6 +63,7 @@ public class MapSurrounding implements RobotProgram {
         while (!userInput.isPressed()) {
             double averageAngle = 0;
             double averageDistance = 0;
+
             try {
                 for (int measurement = 0; measurement < numberOfMeasurements; measurement++) {
                     averageAngle += Math.toRadians(orientation.getAngle());
@@ -71,6 +74,7 @@ public class MapSurrounding implements RobotProgram {
                 log.error("Someone did not set up my dependencies", exception);
                 return 1;
             }
+
             averageAngle = averageAngle / numberOfMeasurements;
             averageDistance = averageDistance / numberOfMeasurements;
 
