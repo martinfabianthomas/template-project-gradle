@@ -21,14 +21,14 @@ public class PingPong implements RobotProgram {
     private final ViewDistance distance;
     private final EV3TouchSensor userInput;
     private final int bounces;
-    private final boolean bounce_limit;
+    private final boolean no_bounce_limit;
 
     public PingPong(OrientationAwareMovement movement, ViewDistance distance, EV3TouchSensor userInput) {
         this.movement = movement;
         this.distance = distance;
         this.userInput = userInput;
         bounces = 0;
-        bounce_limit = false;
+        no_bounce_limit = true;
     }
 
     public PingPong(OrientationAwareMovement movement, ViewDistance distance, EV3TouchSensor userInput,
@@ -37,7 +37,7 @@ public class PingPong implements RobotProgram {
         this.distance = distance;
         this.userInput = userInput;
         bounces = numberOfBounces;
-        bounce_limit = true;
+        no_bounce_limit = false;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class PingPong implements RobotProgram {
 
         log.info("Start");
 
-        for (int bounce = 0; bounce < bounces && bounce_limit; bounce++) {
+        for (int bounce = 0; bounce < bounces || no_bounce_limit; bounce++) {
             movement.forward();
 
             float distanceMeasured;

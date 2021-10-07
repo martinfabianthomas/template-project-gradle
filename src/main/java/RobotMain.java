@@ -54,26 +54,26 @@ public class RobotMain {
 
         List<RobotProgram> examplePrograms = new ArrayList<>();
 
-        // 1: Move around a corner using a white Mark on the Ground and pull a Haribo Box to beginning.
+        // 0: Move around a corner using a white Mark on the Ground and pull a Haribo Box to beginning.
         HariboDeliveryCorner haribo = new HariboDeliveryCorner(movement, grabber, distance, userInput);
         lineDetection.addListener(haribo);
         examplePrograms.add(haribo);
 
-        // 2: Follow a black on white line.
+        // 1: Follow a black on white line.
         LineFollower lineFollower = new LineFollower(movement, userInput);
         lineDetection.addListener(lineFollower);
         examplePrograms.add(lineFollower);
 
-        // 3: Make a map of the robots surroundings using the ultrasonic sensor.
+        // 2: Make a map of the robots surroundings using the ultrasonic sensor.
         examplePrograms.add(new MapSurrounding(movement, orientation, distance,
                 userInput, 500, 500, 10));
 
-        // 4: Bounce back and forth between two walls.
+        // 3: Bounce back and forth between two walls.
         examplePrograms.add(new PingPong(movement, distance, userInput));
 
         log.info("Program start");
 
-        int status = examplePrograms.get(4).start();
+        int status = examplePrograms.get(3).start();
 
         System.exit(status);
     }
