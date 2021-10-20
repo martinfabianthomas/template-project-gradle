@@ -54,7 +54,7 @@ public class RobotMain {
 
         List<RobotProgram> examplePrograms = new ArrayList<>();
 
-        // 0: Move around a corner using a white Mark on the Ground and pull a Haribo Box to beginning.
+        // 0: Move around a corner using a white mark on the ground and pull a Haribo Box to beginning.
         HariboDeliveryCorner haribo = new HariboDeliveryCorner(movement, grabber, distance, userInput);
         lineDetection.addListener(haribo);
         examplePrograms.add(haribo);

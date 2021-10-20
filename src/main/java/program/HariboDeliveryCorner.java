@@ -11,6 +11,10 @@ import wrapper.perception.color.line.LineDetectionListener;
 import wrapper.perception.distance.ViewDistance;
 import wrapper.perception.distance.exception.UncalibratedUltrasonicException;
 
+/**
+ * A program in which the robot around a corner using a white mark on the ground and pulls a Haribo Box to beginning
+ * by following roughly the path it took there.
+ */
 public class HariboDeliveryCorner implements RobotProgram, LineDetectionListener {
 
     private static final Logger log = LoggerFactory.getLogger(HariboDeliveryCorner.class);

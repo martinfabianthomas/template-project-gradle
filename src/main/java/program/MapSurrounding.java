@@ -15,6 +15,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A program that creates a PNG-file of the robots surroundings using the ultrasonic sensor.
+ */
 public class MapSurrounding implements RobotProgram {
 
     private static final Logger log = LoggerFactory.getLogger(MapSurrounding.class);

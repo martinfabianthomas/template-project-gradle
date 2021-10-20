@@ -11,6 +11,10 @@ import wrapper.perception.color.line.LineDetectionListener;
 import wrapper.perception.distance.ViewDistance;
 import wrapper.perception.exception.UncalibratedSensorException;
 
+
+/**
+ * A program in which the robot tries to stay on the right border of a black on white line.
+ */
 public class LineFollower implements RobotProgram, LineDetectionListener {
 
     private static final Logger log = LoggerFactory.getLogger(LineFollower.class);
