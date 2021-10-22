@@ -53,6 +53,7 @@ public class HariboDeliveryCorner implements RobotProgram, LineDetectionListener
         log.info("Start");
         running = true;
 
+        // The start timestamp is recorded and will be used in the overLine function.
         movement.forward();
         systemMillisStart = System.currentTimeMillis();
 
@@ -63,6 +64,8 @@ public class HariboDeliveryCorner implements RobotProgram, LineDetectionListener
             Delay.msDelay(100);
         }
 
+        // After doing a 90° turn in the overLine function, the robot drives straight again until
+        // an obstacle is reached.
         movement.forward();
         systemMillisCorner = System.currentTimeMillis();
 
@@ -81,8 +84,11 @@ public class HariboDeliveryCorner implements RobotProgram, LineDetectionListener
         Delay.msDelay(500);
         movement.stop();
         millisSpentAfterCorner = System.currentTimeMillis() - systemMillisCorner;
+
+        // At this point the Haribo Box has been reached and the amount of time spent before and after corner is known.
         grabber.rotateBy(-60);
 
+        // Now the robot tries to move back the same way it came (usually not very accurate).
         movement.backward();
         Delay.msDelay(millisSpentAfterCorner);
         movement.turnBy(90);

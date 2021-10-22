@@ -71,9 +71,16 @@ public class RobotMain {
         // 3: Bounce back and forth between two walls.
         examplePrograms.add(new PingPong(movement, distance, userInput));
 
+        // 4: Long self test for all motors and sensors.
+        SelfTest longTest = new SelfTest(movement, grabber, orientation, userInput);
+        lineDetection.addListener(longTest);
+        orientation.addListener(longTest);
+        distance.addListener(longTest);
+        examplePrograms.add(longTest);
+
         log.info("Program start");
 
-        int status = examplePrograms.get(3).start();
+        int status = examplePrograms.get(4).start();
 
         System.exit(status);
     }
