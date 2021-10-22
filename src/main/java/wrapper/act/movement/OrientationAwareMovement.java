@@ -22,7 +22,6 @@ public class OrientationAwareMovement extends Movement implements OrientationAng
 
     private boolean turning;
     private float currentAngle;
-    private float lastCommandError;
 
     private float startingAngle;
     private float commandAngle;
@@ -32,7 +31,6 @@ public class OrientationAwareMovement extends Movement implements OrientationAng
         super(leftPort, rightPort);
 
         currentAngle = 0.0f;
-        lastCommandError = 0.0f;
         turning = false;
     }
 
@@ -56,7 +54,6 @@ public class OrientationAwareMovement extends Movement implements OrientationAng
 
         stop();
 
-        lastCommandError = currentAngle - (startingAngle + commandAngle);
         turning = false;
     }
 
@@ -79,9 +76,7 @@ public class OrientationAwareMovement extends Movement implements OrientationAng
             return;
         }
 
-        // This avoids the drift from stopping only after the target angle is reached without having to assume
-        // 0 rotation since last call. There is still drift as part of the measuring imprecision in the gyro.
-        commandAngle = degrees - lastCommandError;
+        commandAngle = degrees;
 
         startingAngle = currentAngle;
         turning = true;
