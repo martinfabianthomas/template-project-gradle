@@ -1,3 +1,4 @@
+import ev3dev.sensors.Battery;
 import ev3dev.sensors.ev3.EV3TouchSensor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -78,9 +79,15 @@ public class RobotMain {
         distance.addListener(longTest);
         examplePrograms.add(longTest);
 
+        // 5: Short self test for all motors and sensors. Does not stop automatically.
+        FastSelfTest shortTest = new FastSelfTest(movement, grabber, distance, orientation,
+                Battery.getInstance(), userInput, 2);
+        lineDetection.addListener(shortTest);
+        examplePrograms.add(shortTest);
+
         log.info("Program start");
 
-        int status = examplePrograms.get(4).start();
+        int status = examplePrograms.get(5).start();
 
         System.exit(status);
     }

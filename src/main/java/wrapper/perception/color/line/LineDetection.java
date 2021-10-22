@@ -133,6 +133,9 @@ public class LineDetection implements LineDetectionPublisher, ReflectionListener
     @Override
     public void addListener(LineDetectionListener lineDetectionListener) {
         listenerList.add(lineDetectionListener);
+
+        // It is assumed that the robot starts on the line. Otherwise finding the line is less reliable.
+        lineDetectionListener.overLine();
     }
 
     @Override
