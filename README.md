@@ -4,6 +4,12 @@
 
 ...
 
+Repo lokal clonen:
+```shell script
+git clone pi@brickhost.local:~/Repos/students_on_robots (oder ein ähnlicher name)
+```
+Passwort: mindstorms
+
 ## Aufgaben
 
 [Hier](aufgabe/e1.md) geht es zur ersten Aufgabe.
