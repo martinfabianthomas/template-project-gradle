@@ -1,4 +1,5 @@
 import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
+import ev3dev.sensors.Battery;
 import ev3dev.sensors.ev3.EV3TouchSensor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -26,7 +27,6 @@ public class RobotMain {
     public static void main(final String[] args) {
         var motorLeft = new EV3LargeRegulatedMotor(MotorPort.B);
         var motorRight = new EV3LargeRegulatedMotor(MotorPort.C);
-        var userInput = new EV3TouchSensor(SensorPort.S4);
 
         int degreesPerSec = 360 / 2;
         motorLeft.setSpeed(degreesPerSec);
@@ -39,32 +39,25 @@ public class RobotMain {
         }));
 
         log.info("Program start");
-        while(!userInput.isPressed()) {
-            Delay.msDelay(50);
-        }
 
-        // Measured times for 2m distance:
-        //                               normal | when on carpet
-        // One full rotation per second - 11.58 | 12.45
-        //          ... every 2 seconds - 23.14 | 24.73
-        //          ... every 4 seconds - 47.28 | 49.46
+        // The robot is positioned an the very start of the 2m and is moved forward until its tip is approx. 5cm from
+        // the end of the 2m. Times measured should be:
+        // One full rotation per second - 10s - 11s
+        //          ... every 2 seconds - 20s - 22s
+        //          ... every 4 seconds - 38s - 42s
+        //          ... every 8 seconds - 72s - 76s
+        // (on carpet about 4% - 5% more time, but the board does not have carpet)
 
-        // Educated guess for cm -> sec conversion at speed 360 / 2:
-        float cmToSecFactor = 25.0f / 200.0f;
-
-        // Optional improvement
-        //cmToSecRatio *= 0.94;
-        // Optional improvement for carpet
-        //cmToSecRatio *= 0.98;
+        // Value for motor speed of 360/2 deg/s
+        int secFor2m = 21;
 
         motorLeft.forward();
         motorRight.forward();
 
-        // Move slightly less than 2m forward:
-        // Robot is approximately 20cm long (without measuring tape 10cm is a very conservative guess)
-        // We can safely subtract the 20cm mentioned in the exercise without getting to close to edge, since
-        // both robot length and speed underestimate how close the robot actually gets.
-        Delay.msDelay((int) ((200 - 20 - 10) * cmToSecFactor * 1000));
+        Delay.msDelay(secFor2m * 1000);
+
+        motorLeft.stop();
+        motorRight.stop();
 
         System.exit(0);
     }
