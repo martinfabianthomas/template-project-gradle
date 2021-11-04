@@ -2,6 +2,7 @@ package solutionclass;
 
 import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
+import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,10 @@ public class Movement {
     public final float secFor180deg;
     public final int secFor2m;
 
-    public Movement(Port leftPort, Port rightPort) {
-        // All copied from last exercises RobotMain.main()
+    private final SampleProvider gyroRotation;
+    private final float[] rotationMeasurement;
+
+    public Movement(Port leftPort, Port rightPort, SampleProvider gyroRotation) {
         motorLeft = new EV3LargeRegulatedMotor(leftPort);
         motorRight = new EV3LargeRegulatedMotor(rightPort);
         defaultDegreesPerSec = 360 / 2;
@@ -33,6 +36,10 @@ public class Movement {
             motorLeft.stop();
             motorRight.stop();
         }));
+
+        // Copied from last exercise.
+        this.gyroRotation = gyroRotation;
+        rotationMeasurement = new float[gyroRotation.sampleSize()];
     }
 
     public void bothForward() {
@@ -61,6 +68,46 @@ public class Movement {
     public void twoMeterStraight() {
         bothForward();
         Delay.msDelay(secFor2m * 1000);
+        bothStop();
+        Delay.msDelay(500);
+    }
+
+    /**
+     * Modified from solution to exercise 2.
+     * Robot turns by the given angle to the left.
+     */
+    public void turnLeftBy(int angle) {
+        // The robots rotation prior to this call should be accounted for now. This was not needed in the last exercise.
+        gyroRotation.fetchSample(rotationMeasurement, 0);
+        var startingAngle = rotationMeasurement[0];
+
+        turnLeft();
+
+        while (rotationMeasurement[0] - startingAngle < angle) {
+            gyroRotation.fetchSample(rotationMeasurement, 0);
+            Delay.msDelay(10);
+        }
+
+        bothStop();
+        Delay.msDelay(500);
+    }
+
+    /**
+     * Robot turns by the given angle to the right.
+     */
+    public void turnRightBy(int angle) {
+        // The robots rotation prior to this call should be accounted for now. This was not needed in the last exercise.
+        gyroRotation.fetchSample(rotationMeasurement, 0);
+        var startingAngle = rotationMeasurement[0];
+
+        turnRight();
+
+        // For a rotation to the right the angle gets smaller.
+        while (rotationMeasurement[0] - startingAngle > -angle) {
+            gyroRotation.fetchSample(rotationMeasurement, 0);
+            Delay.msDelay(10);
+        }
+
         bothStop();
         Delay.msDelay(500);
     }

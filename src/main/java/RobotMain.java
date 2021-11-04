@@ -24,9 +24,6 @@ public class RobotMain {
     );
 
     public static void main(final String[] args) {
-        // Creating a separate class is not necessary, but makes the code more readable.
-        var movement = new Movement(MotorPort.B, MotorPort.C);
-
         // This part was given
         var gyroSensor = new EV3GyroSensor(SensorPort.S3);
         var gyroRotation = gyroSensor.getAngleMode();
@@ -34,43 +31,15 @@ public class RobotMain {
         // Calibration delay for the gyro.
         Delay.msDelay(4000);
 
+        var movement = new Movement(MotorPort.B, MotorPort.C, gyroRotation);
+
         log.info("Program start");
 
         // As in exercise 1
         movement.twoMeterStraight();
 
-        // Turn according to gyro.
-        movement.turnLeft();
-        // The following code naturally turns the robot too much. There are two valid solutions:
-        // 1. finding an appropriate correction term through trial and error
-        // 2. correcting the robots movement on the way back (harder)
-        while (rotationMeasurement[0] < 180) {
-            gyroRotation.fetchSample(rotationMeasurement, 0);
-            Delay.msDelay(10);
-        }
-        // This limits the amount by which it overshoots the 180 deg.
-        movement.bothStop();
-        Delay.msDelay(500);
-
-        // 2. Solution: Similar behaviour to movement.TwoMeterStraight, but once per second the robot might turn
-        // to correct its angle.
-        for (int sec = 0; sec < movement.secFor2m; sec++) {
-            movement.bothForward();
-            Delay.msDelay(1000);
-
-            gyroRotation.fetchSample(rotationMeasurement, 0);
-            if (rotationMeasurement[0] < 180) {
-                movement.turnLeft();
-            } else if (rotationMeasurement[0] > 180) {
-                movement.turnRight();
-            } else {
-                continue;
-            }
-
-            Delay.msDelay(100);
-            movement.bothStop();
-            Delay.msDelay(100);
-        }
+        // Turn 90 deg.
+        movement.turnRightBy(90);
 
         System.exit(0);
     }
