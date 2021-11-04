@@ -58,7 +58,7 @@ public class Movement {
     /**
      * Solution to exercise 1
      */
-    public void TwoMeterStraight() {
+    public void twoMeterStraight() {
         bothForward();
         Delay.msDelay(secFor2m * 1000);
         bothStop();

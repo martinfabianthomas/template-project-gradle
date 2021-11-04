@@ -1,4 +1,3 @@
-import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
 import ev3dev.sensors.ev3.EV3GyroSensor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -38,7 +37,7 @@ public class RobotMain {
         log.info("Program start");
 
         // As in exercise 1
-        movement.TwoMeterStraight();
+        movement.twoMeterStraight();
 
         // Turn according to gyro.
         movement.turnLeft();
