@@ -46,13 +46,13 @@ public class Movement {
     }
 
     public void turnLeft() {
-        motorLeft.forward();
-        motorRight.backward();
+        motorLeft.backward();
+        motorRight.forward();
     }
 
     public void turnRight() {
-        motorLeft.backward();
-        motorRight.forward();
+        motorLeft.forward();
+        motorRight.backward();
     }
 
     /**
