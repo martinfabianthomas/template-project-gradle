@@ -40,11 +40,12 @@ public class RobotMain {
         movement.twoMeterStraight();
 
         // Turn according to gyro.
-        movement.turnLeft();
+        movement.turnRight();
         // The following code naturally turns the robot too much. There are two valid solutions:
         // 1. finding an appropriate correction term through trial and error
         // 2. correcting the robots movement on the way back (harder)
         while (rotationMeasurement[0] < 180) {
+            log.info("at " + rotationMeasurement[0] + " looking for " + 180);
             gyroRotation.fetchSample(rotationMeasurement, 0);
             Delay.msDelay(10);
         }
@@ -60,9 +61,9 @@ public class RobotMain {
 
             gyroRotation.fetchSample(rotationMeasurement, 0);
             if (rotationMeasurement[0] < 180) {
-                movement.turnLeft();
-            } else if (rotationMeasurement[0] > 180) {
                 movement.turnRight();
+            } else if (rotationMeasurement[0] > 180) {
+                movement.turnLeft();
             } else {
                 continue;
             }
