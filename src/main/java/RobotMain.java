@@ -1,3 +1,4 @@
+import ev3dev.actuators.lego.motors.EV3MediumRegulatedMotor;
 import ev3dev.sensors.ev3.EV3GyroSensor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -24,15 +25,14 @@ public class RobotMain {
     );
 
     public static void main(final String[] args) {
-        // Creating a separate class is not necessary, but makes the code more readable.
-        var movement = new Movement(MotorPort.B, MotorPort.C);
-
-        // This part was given
         var gyroSensor = new EV3GyroSensor(SensorPort.S3);
         var gyroRotation = gyroSensor.getAngleMode();
         var rotationMeasurement = new float[gyroRotation.sampleSize()];
         // Calibration delay for the gyro.
         Delay.msDelay(4000);
+
+        var movement = new Movement(MotorPort.B, MotorPort.C, gyroRotation);
+        var grabber = new EV3MediumRegulatedMotor(MotorPort.A);
 
         log.info("Program start");
 
@@ -40,39 +40,19 @@ public class RobotMain {
         movement.twoMeterStraight();
 
         // Turn according to gyro.
-        movement.turnRight();
-        // The following code naturally turns the robot too much. There are two valid solutions:
-        // 1. finding an appropriate correction term through trial and error
-        // 2. correcting the robots movement on the way back (harder)
-        while (rotationMeasurement[0] < 180) {
-            log.info("at " + rotationMeasurement[0] + " looking for " + 180);
-            gyroRotation.fetchSample(rotationMeasurement, 0);
-            Delay.msDelay(10);
-        }
-        // This limits the amount by which it overshoots the 180 deg.
+        movement.turnRightBy(90);
+        Delay.msDelay(200);
+
+        // Move obstacle. Adding extra reach to the grabber is likely needed.
+        movement.turnRightBy(90);
+        grabber.rotate(-120);
+        movement.turnLeftBy(180);
+        grabber.rotate(120);
+        movement.turnRightBy(90);
+
+        // Move forward a little.
+        movement.bothForward();
+        Delay.msDelay(1000);
         movement.bothStop();
-        Delay.msDelay(500);
-
-        // 2. Solution: Similar behaviour to movement.TwoMeterStraight, but once per second the robot might turn
-        // to correct its angle.
-        for (int sec = 0; sec < movement.secFor2m; sec++) {
-            movement.bothForward();
-            Delay.msDelay(1000);
-
-            gyroRotation.fetchSample(rotationMeasurement, 0);
-            if (rotationMeasurement[0] < 180) {
-                movement.turnRight();
-            } else if (rotationMeasurement[0] > 180) {
-                movement.turnLeft();
-            } else {
-                continue;
-            }
-
-            Delay.msDelay(100);
-            movement.bothStop();
-            Delay.msDelay(100);
-        }
-
-        System.exit(0);
     }
 }

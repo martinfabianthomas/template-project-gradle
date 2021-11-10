@@ -74,14 +74,14 @@ public class Movement {
 
     /**
      * Modified from solution to exercise 2.
-     * Robot turns by the given angle to the left.
+     * Robot turns by the given angle to the right.
      */
-    public void turnLeftBy(int angle) {
-        // The robots rotation prior to this call should be accounted for now. This was not needed in the last exercise.
+    public void turnRightBy(int angle) {
+        // The robots rotation prior to this call should be accounted for now.
         gyroRotation.fetchSample(rotationMeasurement, 0);
         var startingAngle = rotationMeasurement[0];
 
-        turnLeft();
+        turnRight();
 
         while (rotationMeasurement[0] - startingAngle < angle) {
             gyroRotation.fetchSample(rotationMeasurement, 0);
@@ -93,16 +93,16 @@ public class Movement {
     }
 
     /**
-     * Robot turns by the given angle to the right.
+     * Robot turns by the given angle to the left.
      */
-    public void turnRightBy(int angle) {
-        // The robots rotation prior to this call should be accounted for now. This was not needed in the last exercise.
+    public void turnLeftBy(int angle) {
+        // The robots rotation prior to this call should be accounted for now.
         gyroRotation.fetchSample(rotationMeasurement, 0);
         var startingAngle = rotationMeasurement[0];
 
-        turnRight();
+        turnLeft();
 
-        // For a rotation to the right the angle gets smaller.
+        // For a rotation to the left the angle gets smaller.
         while (rotationMeasurement[0] - startingAngle > -angle) {
             gyroRotation.fetchSample(rotationMeasurement, 0);
             Delay.msDelay(10);
