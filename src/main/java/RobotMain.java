@@ -1,5 +1,6 @@
 import ev3dev.actuators.lego.motors.EV3MediumRegulatedMotor;
 import ev3dev.sensors.ev3.EV3GyroSensor;
+import ev3dev.sensors.ev3.EV3UltrasonicSensor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.utility.Delay;
@@ -28,7 +29,12 @@ public class RobotMain {
         var gyroSensor = new EV3GyroSensor(SensorPort.S3);
         var gyroRotation = gyroSensor.getAngleMode();
         var rotationMeasurement = new float[gyroRotation.sampleSize()];
-        // Calibration delay for the gyro.
+
+        var ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S2);
+        var ultrasonicDistance = ultrasonicSensor.getDistanceMode();
+        var distanceMeasurement = new float[ultrasonicDistance.sampleSize()];
+
+        // Calibration delay for the ultrasonic.
         Delay.msDelay(4000);
 
         var movement = new Movement(MotorPort.B, MotorPort.C, gyroRotation);
@@ -39,20 +45,38 @@ public class RobotMain {
         // As in exercise 1
         movement.twoMeterStraight();
 
-        // Turn according to gyro.
+        // As is exercise 4
         movement.turnRightBy(90);
         Delay.msDelay(200);
-
-        // Move obstacle. Adding extra reach to the grabber is likely needed.
         movement.turnRightBy(90);
         grabber.rotate(-120);
         movement.turnLeftBy(180);
         grabber.rotate(120);
         movement.turnRightBy(90);
 
-        // Move forward a little.
+        // After turning right thrice and left only once, the robot will overshoot the 90 deg towards the positive.
+        // There are many solutions for this, like in exercise 3. Some are: a correction term, saving the error from a
+        // turnLeftBy / turnRightBy call and accounting for it next time, correcting on the forwards like in exercise 3
+        // or like in the following code, which is mostly the same as in exercise 3, but without moving forward.
+        while (rotationMeasurement[0] != 90) {
+            gyroRotation.fetchSample(rotationMeasurement, 0);
+            if (rotationMeasurement[0] < 90) {
+                movement.turnRight();
+            } else if (rotationMeasurement[0] > 90) {
+                movement.turnLeft();
+            }
+
+            Delay.msDelay(100);
+            movement.bothStop();
+            Delay.msDelay(100);
+        }
+
+        // Move until wall. This part is simple now.
         movement.bothForward();
-        Delay.msDelay(1000);
+        do {
+            ultrasonicDistance.fetchSample(distanceMeasurement, 0);
+            Delay.msDelay(10);
+        } while (distanceMeasurement[0] > 20);
         movement.bothStop();
     }
 }
