@@ -3,6 +3,7 @@ import ev3dev.sensors.ev3.EV3GyroSensor;
 import ev3dev.sensors.ev3.EV3UltrasonicSensor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
+import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,27 +26,42 @@ public class RobotMain {
             7, "brown"
     );
 
+    private static SampleProvider gyroRotation;
+    private static float[] rotationMeasurement;
+    private static SampleProvider ultrasonicDistance;
+    private static float[] distanceMeasurement;
+    private static Movement movement;
+    private static EV3MediumRegulatedMotor grabber;
+
     public static void main(final String[] args) {
         var gyroSensor = new EV3GyroSensor(SensorPort.S3);
-        var gyroRotation = gyroSensor.getAngleMode();
-        var rotationMeasurement = new float[gyroRotation.sampleSize()];
+        gyroRotation = gyroSensor.getAngleMode();
+        rotationMeasurement = new float[gyroRotation.sampleSize()];
 
         var ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S2);
-        var ultrasonicDistance = ultrasonicSensor.getDistanceMode();
-        var distanceMeasurement = new float[ultrasonicDistance.sampleSize()];
+        ultrasonicDistance = ultrasonicSensor.getDistanceMode();
+        distanceMeasurement = new float[ultrasonicDistance.sampleSize()];
 
-        // Calibration delay for the ultrasonic.
+        // Calibration delay.
         Delay.msDelay(4000);
 
-        var movement = new Movement(MotorPort.B, MotorPort.C, gyroRotation);
-        var grabber = new EV3MediumRegulatedMotor(MotorPort.A);
+        // Signature changed.
+        movement = new Movement(MotorPort.B, MotorPort.C, gyroRotation, ultrasonicDistance);
+        grabber = new EV3MediumRegulatedMotor(MotorPort.A);
 
         log.info("Program start");
 
-        // As in exercise 1
-        movement.twoMeterStraight();
+        // This step could also have been done earlier or later than this exercise.
+        exercise1();
+        exercise4();
+        exercise5();
+    }
 
-        // As is exercise 4
+    private static void exercise1() {
+        movement.twoMeterStraight();
+    }
+
+    private static void exercise4() {
         movement.turnRightBy(90);
         Delay.msDelay(200);
         movement.turnRightBy(90);
@@ -54,29 +70,11 @@ public class RobotMain {
         grabber.rotate(120);
         movement.turnRightBy(90);
 
-        // After turning right thrice and left only once, the robot will overshoot the 90 deg towards the positive.
-        // There are many solutions for this, like in exercise 3. Some are: a correction term, saving the error from a
-        // turnLeftBy / turnRightBy call and accounting for it next time, correcting on the forwards like in exercise 3
-        // or like in the following code, which is mostly the same as in exercise 3, but without moving forward.
-        while (rotationMeasurement[0] != 90) {
-            gyroRotation.fetchSample(rotationMeasurement, 0);
-            if (rotationMeasurement[0] < 90) {
-                movement.turnRight();
-            } else if (rotationMeasurement[0] > 90) {
-                movement.turnLeft();
-            }
+        // Improvement from exercise 5.
+        movement.moveToAbsoluteRotation(90);
+    }
 
-            Delay.msDelay(100);
-            movement.bothStop();
-            Delay.msDelay(100);
-        }
-
-        // Move until wall. This part is simple now.
-        movement.bothForward();
-        do {
-            ultrasonicDistance.fetchSample(distanceMeasurement, 0);
-            Delay.msDelay(10);
-        } while (distanceMeasurement[0] > 20);
-        movement.bothStop();
+    private static void exercise5() {
+        movement.moveUntilWall(20);
     }
 }

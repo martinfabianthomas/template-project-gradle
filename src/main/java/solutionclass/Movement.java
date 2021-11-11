@@ -20,8 +20,10 @@ public class Movement {
 
     private final SampleProvider gyroRotation;
     private final float[] rotationMeasurement;
+    private final SampleProvider ultrasonicDistance;
+    private final float[] distanceMeasurement;
 
-    public Movement(Port leftPort, Port rightPort, SampleProvider gyroRotation) {
+    public Movement(Port leftPort, Port rightPort, SampleProvider gyroRotation, SampleProvider ultrasonicDistance) {
         motorLeft = new EV3LargeRegulatedMotor(leftPort);
         motorRight = new EV3LargeRegulatedMotor(rightPort);
         defaultDegreesPerSec = 360 / 2;
@@ -37,9 +39,10 @@ public class Movement {
             motorRight.stop();
         }));
 
-        // Copied from last exercise.
         this.gyroRotation = gyroRotation;
         rotationMeasurement = new float[gyroRotation.sampleSize()];
+        this.ultrasonicDistance = ultrasonicDistance;
+        distanceMeasurement = new float[ultrasonicDistance.sampleSize()];
     }
 
     public void bothForward() {
@@ -110,5 +113,37 @@ public class Movement {
 
         bothStop();
         Delay.msDelay(500);
+    }
+
+    /**
+     * After this call the robots gyro is guaranteed to measure the given value.
+     */
+    public void moveToAbsoluteRotation(int angle) {
+        // There are many ways of refactoring the last exercise into this class, depending on how it was solved.
+        // This is the fastest as hardly any code needs to be altered.
+
+        // switched to do-while as the robots rotation prior to this call should be accounted for now.
+        do {
+            gyroRotation.fetchSample(rotationMeasurement, 0);
+            if (rotationMeasurement[0] < angle) {
+                turnRight();
+            } else if (rotationMeasurement[0] > angle) {
+                turnLeft();
+            }
+
+            Delay.msDelay(100);
+            bothStop();
+            Delay.msDelay(100);
+        } while (rotationMeasurement[0] != angle);
+    }
+
+    public void moveUntilWall(int distance) {
+        // Copied from last exercise.
+        bothForward();
+        do {
+            ultrasonicDistance.fetchSample(distanceMeasurement, 0);
+            Delay.msDelay(10);
+        } while (distanceMeasurement[0] > distance);
+        bothStop();
     }
 }
