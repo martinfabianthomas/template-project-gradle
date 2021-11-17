@@ -45,6 +45,8 @@ public class RobotMain {
 
         // Move obstacle. Adding extra reach to the grabber is likely needed.
         movement.turnRightBy(90);
+        // Note also that this call unlike forward + Delay can bring the whole program to a halt, if the arm is not
+        // able to move 120 deg due to its initial position.
         grabber.rotate(-120);
         movement.turnLeftBy(180);
         grabber.rotate(120);
