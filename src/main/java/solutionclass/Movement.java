@@ -23,14 +23,6 @@ public class Movement {
     private final SampleProvider ultrasonicDistance;
     private final float[] distanceMeasurement;
 
-
-
-
-
-
-
-    private long last_stop;
-
     public Movement(Port leftPort, Port rightPort, SampleProvider gyroRotation, SampleProvider ultrasonicDistance) {
         motorLeft = new EV3LargeRegulatedMotor(leftPort);
         motorRight = new EV3LargeRegulatedMotor(rightPort);
@@ -51,13 +43,6 @@ public class Movement {
         rotationMeasurement = new float[gyroRotation.sampleSize()];
         this.ultrasonicDistance = ultrasonicDistance;
         distanceMeasurement = new float[ultrasonicDistance.sampleSize()];
-
-
-
-
-
-
-        last_stop = System.currentTimeMillis();
     }
 
     public void bothForward() {
@@ -74,8 +59,6 @@ public class Movement {
     }
 
     public void bothStop() {
-        log.info("stop called " + (System.currentTimeMillis() - last_stop));
-        last_stop = System.currentTimeMillis();
         motorLeft.stop();
         motorRight.stop();
     }
