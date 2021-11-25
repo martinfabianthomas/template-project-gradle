@@ -45,16 +45,30 @@ public class RobotMain {
         // Calibration delay.
         Delay.msDelay(4000);
 
-        // Signature changed.
         movement = new Movement(MotorPort.B, MotorPort.C, gyroRotation, ultrasonicDistance);
         grabber = new EV3MediumRegulatedMotor(MotorPort.A);
 
         log.info("Program start");
 
-        // This step could also have been done earlier or later than this exercise.
         exercise1();
         exercise4();
         exercise5();
+
+        // Start of exercise 6
+        movement.turnRightBy(90);
+        movement.moveToAbsoluteRotation(180);
+        movement.moveUntilWall(10);
+
+        // The following code slowly steps past the initial face of wall and then uses the same code to also get
+        // the width of the wall right. The second part is optional and can also just be guessed.
+        var wallLengthInSec = stepPastWall();
+        // The robot repositions itself to find the width.
+        movement.bothForwardFor(3);
+        movement.turnLeftBy(90);
+
+        stepPastWall();
+
+        movement.bothForwardFor(wallLengthInSec);
     }
 
     private static void exercise1() {
@@ -63,18 +77,62 @@ public class RobotMain {
 
     private static void exercise4() {
         movement.turnRightBy(90);
+
         Delay.msDelay(200);
         movement.turnRightBy(90);
         grabber.rotate(-120);
         movement.turnLeftBy(180);
         grabber.rotate(120);
-        movement.turnRightBy(90);
 
+        movement.turnRightBy(90);
         // Improvement from exercise 5.
         movement.moveToAbsoluteRotation(90);
     }
 
     private static void exercise5() {
         movement.moveUntilWall(20);
+    }
+
+    private static void stepAlongWall(int secForward, int facingWallAngle) {
+        movement.turnRightBy(90);
+        // If this is not called here, the robot will slowly move further away from the wall.
+        movement.moveToAbsoluteRotation(facingWallAngle + 90);
+
+        movement.bothForwardFor(secForward);
+
+        movement.turnLeftBy(90);
+        // Another call here to ensure accurate measurements.
+        movement.moveToAbsoluteRotation(facingWallAngle);
+    }
+
+    /**
+     * Takes steps along the wall the robot is facing and returns an indication of the walls length.
+     * @return number of seconds that were required to move past the wall.
+     */
+    private static int stepPastWall() {
+        gyroRotation.fetchSample(rotationMeasurement, 0);
+        var facingWallAngle = (int) rotationMeasurement[0];
+        var nextToWall = true;
+        var secondsInMotion = 0;
+        var secondsPerStep = 1;
+
+        while (nextToWall) {
+            stepAlongWall(secondsPerStep, facingWallAngle);
+            secondsInMotion += secondsPerStep;
+
+            ultrasonicDistance.fetchSample(distanceMeasurement, 0);
+            // The condition that is checked uses twice the argument passed to moveUntilWall.
+            nextToWall = distanceMeasurement[0] < 20;
+        }
+
+        // Since there is extra space in the lane that can be used and the robot should not collide with the wall, an
+        // extra step should be taken.
+        stepAlongWall(2, facingWallAngle);
+        secondsInMotion += 2;
+
+        // This function should leave the robot in the original orientation.
+        movement.moveToAbsoluteRotation(facingWallAngle);
+
+        return secondsInMotion;
     }
 }

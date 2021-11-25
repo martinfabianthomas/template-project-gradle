@@ -23,6 +23,14 @@ public class Movement {
     private final SampleProvider ultrasonicDistance;
     private final float[] distanceMeasurement;
 
+
+
+
+
+
+
+    private long last_stop;
+
     public Movement(Port leftPort, Port rightPort, SampleProvider gyroRotation, SampleProvider ultrasonicDistance) {
         motorLeft = new EV3LargeRegulatedMotor(leftPort);
         motorRight = new EV3LargeRegulatedMotor(rightPort);
@@ -43,6 +51,13 @@ public class Movement {
         rotationMeasurement = new float[gyroRotation.sampleSize()];
         this.ultrasonicDistance = ultrasonicDistance;
         distanceMeasurement = new float[ultrasonicDistance.sampleSize()];
+
+
+
+
+
+
+        last_stop = System.currentTimeMillis();
     }
 
     public void bothForward() {
@@ -50,7 +65,17 @@ public class Movement {
         motorRight.forward();
     }
 
+    public void bothForwardFor(int sec) {
+        // Added for exercise 6, but could have also been here from the start.
+        bothForward();
+        Delay.msDelay(sec * 1000);
+        bothStop();
+        Delay.msDelay(500);
+    }
+
     public void bothStop() {
+        log.info("stop called " + (System.currentTimeMillis() - last_stop));
+        last_stop = System.currentTimeMillis();
         motorLeft.stop();
         motorRight.stop();
     }
@@ -69,10 +94,7 @@ public class Movement {
      * Solution to exercise 1
      */
     public void twoMeterStraight() {
-        bothForward();
-        Delay.msDelay(secFor2m * 1000);
-        bothStop();
-        Delay.msDelay(500);
+        bothForwardFor(secFor2m);
     }
 
     /**
@@ -122,16 +144,19 @@ public class Movement {
         // There are many ways of refactoring the last exercise into this class, depending on how it was solved.
         // This is the fastest as hardly any code needs to be altered.
 
-        // switched to do-while as the robots rotation prior to this call should be accounted for now.
+        // switched to do-while as the robots rotation prior to this call has to be accounted for, unlike before.
         do {
             gyroRotation.fetchSample(rotationMeasurement, 0);
             if (rotationMeasurement[0] < angle) {
                 turnRight();
             } else if (rotationMeasurement[0] > angle) {
                 turnLeft();
+
+                // This and the lower delay after this if, avoids endless seeming back-and-forth movement by the robot.
+                Delay.msDelay(20);
             }
 
-            Delay.msDelay(100);
+            Delay.msDelay(50);
             bothStop();
             Delay.msDelay(100);
         } while (rotationMeasurement[0] != angle);
@@ -142,8 +167,10 @@ public class Movement {
         bothForward();
         do {
             ultrasonicDistance.fetchSample(distanceMeasurement, 0);
+            log.info("move until wall " + distanceMeasurement[0]);
             Delay.msDelay(10);
         } while (distanceMeasurement[0] > distance);
         bothStop();
+        Delay.msDelay(500);
     }
 }
