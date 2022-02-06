@@ -53,7 +53,7 @@ public class Movement {
     public void bothForwardFor(int sec) {
         // Added for exercise 6, but could have also been here from the start.
         bothForward();
-        Delay.msDelay(sec * 1000);
+        Delay.msDelay(sec * 1000L);
         bothStop();
         Delay.msDelay(500);
     }
@@ -150,7 +150,6 @@ public class Movement {
         bothForward();
         do {
             ultrasonicDistance.fetchSample(distanceMeasurement, 0);
-            log.info("move until wall " + distanceMeasurement[0]);
             Delay.msDelay(10);
         } while (distanceMeasurement[0] > distance);
         bothStop();
