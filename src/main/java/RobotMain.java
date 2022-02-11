@@ -6,22 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import solutionclass.Movement;
 
-import java.util.Map;
-
 public class RobotMain {
 
     private static final Logger log = LoggerFactory.getLogger(RobotMain.class);
-
-    private static final Map<Integer, String> colorNames = Map.of(
-            0, "none",
-            1, "black",
-            2, "blue",
-            3, "green",
-            4, "yellow",
-            5, "red",
-            6, "white",
-            7, "brown"
-    );
 
     public static void main(final String[] args) {
         // Creating a separate class is not necessary, but makes the code more readable.
@@ -45,15 +32,14 @@ public class RobotMain {
         // 1. finding an appropriate correction term through trial and error
         // 2. correcting the robots movement on the way back (harder)
         while (rotationMeasurement[0] < 180) {
-            log.info("at " + rotationMeasurement[0] + " looking for " + 180);
             gyroRotation.fetchSample(rotationMeasurement, 0);
             Delay.msDelay(10);
         }
-        // This limits the amount by which it overshoots the 180 deg.
-        movement.bothStop();
-        Delay.msDelay(500);
+        // From some tests it looks like stopping the motors here limits the amount by which it overshoots the 180 deg.
+        //movement.bothStop();
+        //Delay.msDelay(500);
 
-        // 2. Solution: Similar behaviour to movement.TwoMeterStraight, but once per second the robot might turn
+        // 2. Solution: Similar behaviour to movement.twoMeterStraight, but once per second the robot might turn
         // to correct its angle.
         for (int sec = 0; sec < movement.secFor2m; sec++) {
             movement.bothForward();
@@ -68,8 +54,6 @@ public class RobotMain {
                 continue;
             }
 
-            Delay.msDelay(100);
-            movement.bothStop();
             Delay.msDelay(100);
         }
 

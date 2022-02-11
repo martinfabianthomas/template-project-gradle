@@ -22,8 +22,8 @@ public class Movement {
         motorLeft = new EV3LargeRegulatedMotor(leftPort);
         motorRight = new EV3LargeRegulatedMotor(rightPort);
         defaultDegreesPerSec = 360 / 2;
-        secFor180deg = 0.97f * (41.25f / 20.0f);
-        secFor2m = 21;
+        secFor180deg = 41.25f / 20.0f;
+        secFor2m = 20;
 
         motorLeft.setSpeed(defaultDegreesPerSec);
         motorRight.setSpeed(defaultDegreesPerSec);
@@ -60,7 +60,7 @@ public class Movement {
      */
     public void twoMeterStraight() {
         bothForward();
-        Delay.msDelay(secFor2m * 1000);
+        Delay.msDelay(secFor2m * 1000L);
         bothStop();
         Delay.msDelay(500);
     }
