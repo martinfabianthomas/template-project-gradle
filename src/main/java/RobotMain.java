@@ -1,28 +1,12 @@
 import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
-import ev3dev.sensors.Battery;
-import ev3dev.sensors.ev3.EV3TouchSensor;
 import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
 import lejos.utility.Delay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 public class RobotMain {
 
     private static final Logger log = LoggerFactory.getLogger(RobotMain.class);
-
-    private static final Map<Integer, String> colorNames = Map.of(
-            0, "none",
-            1, "black",
-            2, "blue",
-            3, "green",
-            4, "yellow",
-            5, "red",
-            6, "white",
-            7, "brown"
-    );
 
     public static void main(final String[] args) {
         var motorLeft = new EV3LargeRegulatedMotor(MotorPort.B);
@@ -40,16 +24,13 @@ public class RobotMain {
 
         log.info("Program start");
 
-        // The robot is positioned an the very start of the 2m and is moved forward until its tip is approx. 5cm from
-        // the end of the 2m. Times measured should be:
-        // One full rotation per second - 10s - 11s
-        //          ... every 2 seconds - 20s - 22s
-        //          ... every 4 seconds - 38s - 42s
-        //          ... every 8 seconds - 72s - 76s
+        // The robot is positioned slightly after the start of the 2m, like it would on the board. It is moved forward
+        // until its tip is less than 10cm from the end of the 2m. Times measured should be:
+        // 10s for a speed of one full rotation per second.
         // (on carpet about 4% - 5% more time, but the board does not have carpet)
 
         // Value for motor speed of 360/2 deg/s
-        int secFor2m = 21;
+        int secFor2m = 20;
 
         motorLeft.forward();
         motorRight.forward();
