@@ -27,8 +27,8 @@ public class Movement {
         motorLeft = new EV3LargeRegulatedMotor(leftPort);
         motorRight = new EV3LargeRegulatedMotor(rightPort);
         defaultDegreesPerSec = 360 / 2;
-        secFor180deg = 0.97f * (41.25f / 20.0f);
-        secFor2m = 21;
+        secFor180deg = 41.25f / 20.0f;
+        secFor2m = 20;
 
         motorLeft.setSpeed(defaultDegreesPerSec);
         motorRight.setSpeed(defaultDegreesPerSec);
@@ -50,10 +50,10 @@ public class Movement {
         motorRight.forward();
     }
 
-    public void bothForwardFor(int sec) {
+    public void bothForwardFor(float sec) {
         // Added for exercise 6, but could have also been here from the start.
         bothForward();
-        Delay.msDelay(sec * 1000L);
+        Delay.msDelay((int) (sec * 1000L));
         bothStop();
         Delay.msDelay(500);
     }

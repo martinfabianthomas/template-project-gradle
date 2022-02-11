@@ -9,22 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import solutionclass.Movement;
 
-import java.util.Map;
-
 public class RobotMain {
 
     private static final Logger log = LoggerFactory.getLogger(RobotMain.class);
-
-    private static final Map<Integer, String> colorNames = Map.of(
-            0, "none",
-            1, "black",
-            2, "blue",
-            3, "green",
-            4, "yellow",
-            5, "red",
-            6, "white",
-            7, "brown"
-    );
 
     private static SampleProvider gyroRotation;
     private static float[] rotationMeasurement;
@@ -57,8 +44,9 @@ public class RobotMain {
         // Start of exercise 6
         movement.turnRightBy(90);
         movement.moveToAbsoluteRotation(180);
-        movement.moveUntilWall(10);
+        movement.moveUntilWall(15);
 
+        movement.moveToAbsoluteRotation(180);
         // The following code slowly steps past the initial face of wall and then uses the same code to also get
         // the width of the wall right. The second part is optional and can also just be guessed.
         var wallLengthInSec = stepPastWall();
@@ -90,10 +78,10 @@ public class RobotMain {
     }
 
     private static void exercise5() {
-        movement.moveUntilWall(20);
+        movement.moveUntilWall(15);
     }
 
-    private static void stepAlongWall(int secForward, int facingWallAngle) {
+    private static void stepAlongWall(float secForward, int facingWallAngle) {
         movement.turnRightBy(90);
         // If this is not called here, the robot will slowly move further away from the wall.
         movement.moveToAbsoluteRotation(facingWallAngle + 90);
@@ -109,12 +97,12 @@ public class RobotMain {
      * Takes steps along the wall the robot is facing and returns an indication of the walls length.
      * @return number of seconds that were required to move past the wall.
      */
-    private static int stepPastWall() {
+    private static float stepPastWall() {
         gyroRotation.fetchSample(rotationMeasurement, 0);
         var facingWallAngle = (int) rotationMeasurement[0];
         var nextToWall = true;
-        var secondsInMotion = 0;
-        var secondsPerStep = 1;
+        var secondsInMotion = 0.0f;
+        var secondsPerStep = 1.5f;
 
         while (nextToWall) {
             stepAlongWall(secondsPerStep, facingWallAngle);
@@ -127,8 +115,8 @@ public class RobotMain {
 
         // Since there is extra space in the lane that can be used and the robot should not collide with the wall, an
         // extra step should be taken.
-        stepAlongWall(2, facingWallAngle);
-        secondsInMotion += 2;
+        stepAlongWall(1, facingWallAngle);
+        secondsInMotion += 1.5f;
 
         // This function should leave the robot in the original orientation.
         movement.moveToAbsoluteRotation(facingWallAngle);
