@@ -7,22 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import solutionclass.Movement;
 
-import java.util.Map;
-
 public class RobotMain {
 
     private static final Logger log = LoggerFactory.getLogger(RobotMain.class);
-
-    private static final Map<Integer, String> colorNames = Map.of(
-            0, "none",
-            1, "black",
-            2, "blue",
-            3, "green",
-            4, "yellow",
-            5, "red",
-            6, "white",
-            7, "brown"
-    );
 
     public static void main(final String[] args) {
         var gyroSensor = new EV3GyroSensor(SensorPort.S3);
@@ -45,7 +32,7 @@ public class RobotMain {
 
         // Move obstacle. Adding extra reach to the grabber is likely needed.
         movement.turnRightBy(90);
-        // Note also that this call unlike forward + Delay can bring the whole program to a halt, if the arm is not
+        // Note also that this call, unlike forward + Delay, can bring the whole program to a halt, if the arm is not
         // able to move 120 deg due to its initial position.
         grabber.rotate(-120);
         movement.turnLeftBy(180);
@@ -54,7 +41,7 @@ public class RobotMain {
 
         // Move forward a little.
         movement.bothForward();
-        Delay.msDelay(1000);
+        Delay.msDelay(3000);
         movement.bothStop();
     }
 }
