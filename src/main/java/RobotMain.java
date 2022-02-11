@@ -8,22 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import solutionclass.Movement;
 
-import java.util.Map;
-
 public class RobotMain {
 
     private static final Logger log = LoggerFactory.getLogger(RobotMain.class);
-
-    private static final Map<Integer, String> colorNames = Map.of(
-            0, "none",
-            1, "black",
-            2, "blue",
-            3, "green",
-            4, "yellow",
-            5, "red",
-            6, "white",
-            7, "brown"
-    );
 
     public static void main(final String[] args) {
         var gyroSensor = new EV3GyroSensor(SensorPort.S3);
@@ -76,7 +63,7 @@ public class RobotMain {
         do {
             ultrasonicDistance.fetchSample(distanceMeasurement, 0);
             Delay.msDelay(10);
-        } while (distanceMeasurement[0] > 20);
+        } while (distanceMeasurement[0] > 15);
         movement.bothStop();
     }
 }
