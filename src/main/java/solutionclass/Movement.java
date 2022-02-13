@@ -28,7 +28,8 @@ public class Movement {
         motorRight = new EV3LargeRegulatedMotor(rightPort);
         defaultDegreesPerSec = 360 / 2;
         secFor180deg = 41.25f / 20.0f;
-        secFor2m = 20;
+        // has been fine-tuned.
+        secFor2m = 19;
 
         motorLeft.setSpeed(defaultDegreesPerSec);
         motorRight.setSpeed(defaultDegreesPerSec);

@@ -115,8 +115,8 @@ public class RobotMain {
 
         // Since there is extra space in the lane that can be used and the robot should not collide with the wall, an
         // extra step should be taken.
-        stepAlongWall(1, facingWallAngle);
-        secondsInMotion += 1.5f;
+        stepAlongWall(1.25f, facingWallAngle);
+        secondsInMotion += 1.25f;
 
         // This function should leave the robot in the original orientation.
         movement.moveToAbsoluteRotation(facingWallAngle);
