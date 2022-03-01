@@ -1,6 +1,9 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codesnippets.Motor;
+import codesnippets.Sensors;
+
 public class RobotMain {
 
     private static final Logger log = LoggerFactory.getLogger(RobotMain.class);
@@ -11,6 +14,9 @@ public class RobotMain {
         }));
 
         log.info("Program start");
+        Motor.example();
+        Sensors.gyroExample();
+        Sensors.ultrasoundExample();
 
         System.exit(0);
     }
