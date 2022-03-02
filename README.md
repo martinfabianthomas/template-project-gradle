@@ -24,7 +24,7 @@
     git clone pi@brickhost.local:~/repos/students_on_robots (Passwort: mindstorms)
     ```
 
-3. Von master einen Branch für das Team erstellen z.B. teams/A
+3. Von master einen Branch für das Team erstellen z.B. team/A
 
 3. Live Share Session starten
 
@@ -32,14 +32,14 @@
     In VS Code ein Terminal öffnen und eingeben:
     ```shell script
     ssh pi@brickhost.local (Passwort: mindstorms)
-    echo 'https://prod.liveshare.vsengsaas.visualstudio.com/join?...' > ~/teams/A/join_link
+    echo 'https://prod.liveshare.vsengsaas.visualstudio.com/join?...' > ~/team/A/join_link
     ```
 
 5. Andere Teammitglieder treten der Session bei  
     In VS Code ein Terminal öffnen und eingeben:
     ```shell script
     ssh pi@brickhost.local (Passwort: mindstorms)
-    cat ~/teams/A/join_link
+    cat ~/team/A/join_link
     ```
     Link kopieren und ...
 
